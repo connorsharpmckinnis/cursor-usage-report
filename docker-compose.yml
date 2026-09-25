@@ -1,0 +1,16 @@
+services:
+  usage-report:
+    build: .
+    image: apex-cursor-usage-report:local
+    container_name: apex-cursor-usage-report
+    ports:
+      - "9003:9003"
+    environment:
+      PORT: "9003"
+      USAGE_REPORT_DATA: /data/uploads
+    volumes:
+      - usage-report-data:/data/uploads
+    restart: unless-stopped
+
+volumes:
+  usage-report-data:

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cursor / Grok Bot usage report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/upload.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="eyebrow">Town of Apex · Innovations</div>
+      <h1>Cursor / Grok Bot usage</h1>
+      <p class="sub">
+        Upload a Cursor Team usage export CSV to generate the interactive dashboard.
+        On Team plan there is no API pull — download from the Cursor dashboard, then drop it here.
+      </p>
+    </header>
+
+    {% if error %}
+    <div class="error" role="alert">{{ error }}</div>
+    {% endif %}
+
+    <form class="upload-card" action="/upload" method="post" enctype="multipart/form-data">
+      <label class="file-drop" for="file">
+        <input id="file" name="file" type="file" accept=".csv,text/csv" required />
+        <span class="file-title">Choose team-usage-events CSV</span>
+        <span class="file-hint">From Cursor → Settings → Usage → Export (Team)</span>
+        <span id="file-name" class="file-name"></span>
+      </label>
+
+      <details class="advanced">
+        <summary>Seat / billing assumptions</summary>
+        <div class="adv-body">
+          <label>
+            Seat cost (USD / mo)
+            <input type="number" name="seat_cost" step="0.01" min="0" value="{{ default_seat_cost }}" />
+          </label>
+          <label>
+            Seat emails (one per line)
+            <textarea name="seats" rows="6">{{ default_seats }}</textarea>
+          </label>
+          <p class="hint">Licenses are not in the export. Defaults match the current Apex Team roster at $40/seat.</p>
+        </div>
+      </details>
+
+      <button type="submit" class="primary">Build report</button>
+    </form>
+
+  </div>
+  <script>
+    const input = document.getElementById('file');
+    const nameEl = document.getElementById('file-name');
+    input.addEventListener('change', () => {
+      nameEl.textContent = input.files?.[0]?.name || '';
+    });
+  </script>
+</body>
+</html>
